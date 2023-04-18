@@ -35,6 +35,7 @@ import Resolver from '../../lib/core/Resolver';
 import Response from '../../lib/common/Response';
 import ResponseStatus from '../../lib/common/enums/ResponseStatus';
 import SidetreeError from '../../lib/common/SidetreeError';
+import IDidTypeStore from '../../lib/core/interfaces/IDidTypeStore';
 
 const util = require('util');
 
@@ -54,6 +55,7 @@ describe('RequestHandler', () => {
   let cas: ICas;
   let batchScheduler: BatchScheduler;
   let operationStore: IOperationStore;
+  let didTypeStore: IDidTypeStore
   let resolver: Resolver;
   let requestHandler: RequestHandler;
   let versionManager: IVersionManager;
@@ -94,6 +96,7 @@ describe('RequestHandler', () => {
     requestHandler = new RequestHandler(
       resolver,
       operationQueue,
+      didTypeStore,
       didMethodName
     );
 

@@ -15,6 +15,7 @@ import Ipfs from '../../lib/ipfs/Ipfs';
 import JasmineSidetreeErrorValidator from '../JasmineSidetreeErrorValidator';
 import Jwk from '../../lib/core/versions/latest/util/Jwk';
 import MockBlockchain from '../mocks/MockBlockchain';
+import MockDidTypeStore from '../mocks/MockDidTypeStore';
 import MockOperationStore from '../mocks/MockOperationStore';
 import OperationGenerator from '../generators/OperationGenerator';
 import ProvisionalIndexFile from '../../lib/core/versions/latest/ProvisionalIndexFile';
@@ -28,6 +29,7 @@ import ValueTimeLockVerifier from '../../lib/core/versions/latest/ValueTimeLockV
 describe('TransactionProcessor', () => {
   let casClient: Ipfs;
   let operationStore: MockOperationStore;
+  let didTypeStore : MockDidTypeStore;
   let downloadManager: DownloadManager;
   let blockchain: IBlockchain;
   let transactionProcessor: TransactionProcessor;
@@ -51,7 +53,7 @@ describe('TransactionProcessor', () => {
 
     operationStore = new MockOperationStore();
     blockchain = new MockBlockchain();
-    transactionProcessor = new TransactionProcessor(downloadManager, operationStore, blockchain, versionMetadataFetcher);
+    transactionProcessor = new TransactionProcessor(downloadManager, operationStore, didTypeStore, blockchain, versionMetadataFetcher);
   });
 
   describe('processTransaction()', () => {

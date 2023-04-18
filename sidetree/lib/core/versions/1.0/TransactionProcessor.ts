@@ -6,11 +6,13 @@ import ChunkFile from './ChunkFile';
 import ChunkFileModel from './models/ChunkFileModel';
 import CoreIndexFile from './CoreIndexFile';
 import CoreProofFile from './CoreProofFile';
+import DidTypeModel from '../../models/DidTypeModel';
 import DownloadManager from '../../DownloadManager';
 import ErrorCode from './ErrorCode';
 import FeeManager from './FeeManager';
 import FetchResultCode from '../../../common/enums/FetchResultCode';
 import IBlockchain from '../../interfaces/IBlockchain';
+import IDidTypeStore from '../../interfaces/IDidTypeStore';
 import IOperationStore from '../../interfaces/IOperationStore';
 import ITransactionProcessor from '../../interfaces/ITransactionProcessor';
 import IVersionMetadataFetcher from '../../interfaces/IVersionMetadataFetcher';
@@ -31,12 +33,14 @@ export default class TransactionProcessor implements ITransactionProcessor {
   public constructor (
     private downloadManager: DownloadManager,
     private operationStore: IOperationStore,
+    private didTypeStore : IDidTypeStore,
     private blockchain: IBlockchain,
     private versionMetadataFetcher: IVersionMetadataFetcher) {
   }
 
   public async processTransaction (transaction: TransactionModel): Promise<boolean> {
 
+    console.log('1.1');
     // Download the core (index and proof) files.
     let anchoredData: AnchoredData;
     let coreIndexFile: CoreIndexFile;
@@ -73,6 +77,8 @@ export default class TransactionProcessor implements ITransactionProcessor {
       const transactionProcessedCompletely = !retryNeeded;
       return transactionProcessedCompletely;
     }
+
+    console.log('1.2');
 
     // Once code reaches here, it means core files are valid. In order to be compatible with the future data-pruning feature,
     // the operations referenced in core index file must be retained regardless of the validity of provisional and chunk files.
@@ -121,6 +127,21 @@ export default class TransactionProcessor implements ITransactionProcessor {
 
     // Once code reaches here, it means all the files that are not `undefined` (and their relationships) are validated,
     // there is no need to perform any more validations at this point, we just need to compose the anchored operations and store them.
+
+    try {
+    console.log('1.3');
+    console.log(JSON.stringify(coreIndexFile));
+    console.log('~~~~~~~ PRINT OUT CREATE DID SUFFIXES ~~~~~~~');
+    const didTypeModels = this.composeDidType(coreIndexFile);
+    if (didTypeModels.length > 0) {
+      await this.didTypeStore.insert(didTypeModels);
+    }
+
+    console.log('~~~~~~~ AFTER PRINT OUT CREATE DID SUFFIXES ~~~~~~~');
+
+    } catch (error) {
+      Logger.error(LogColor.red(`Unexpected error while adding did type`));
+    }
 
     // Compose using files downloaded into anchored operations.
     const operations = await this.composeAnchoredOperationModels(
@@ -286,6 +307,25 @@ export default class TransactionProcessor implements ITransactionProcessor {
     }
 
     return chunkFileModel;
+  }
+
+  private composeDidType (coreIndexFile: CoreIndexFile): DidTypeModel[] {
+    const didTypes: DidTypeModel[] = [];
+
+    const createDidSuffixes = coreIndexFile.createDidSuffixes;
+    for (let i = 0; i < createDidSuffixes.length; i++) {
+      const suffixData = coreIndexFile.model.operations!.create![i].suffixData;
+
+      if (suffixData.type) {
+        const didTypeModel: DidTypeModel = {
+          didUniqueSuffix: createDidSuffixes[i],
+          didType: suffixData.type
+        };
+
+        didTypes.push(didTypeModel);
+      }
+    }
+    return didTypes;
   }
 
   private async composeAnchoredOperationModels (

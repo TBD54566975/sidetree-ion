@@ -7,6 +7,7 @@ import DownloadManager from '../../lib/core/DownloadManager';
 import ErrorCode from '../../lib/common/SharedErrorCode';
 import FetchResult from '../../lib/common/models/FetchResult';
 import FetchResultCode from '../../lib/common/enums/FetchResultCode';
+import IDidTypeStore from '../../lib/core/interfaces/IDidTypeStore';
 import IOperationStore from '../../lib/core/interfaces/IOperationStore';
 import ITransactionProcessor from '../../lib/core/interfaces/ITransactionProcessor';
 import IVersionManager from '../../lib/core/interfaces/IVersionManager';
@@ -14,6 +15,7 @@ import Ipfs from '../../lib/ipfs/Ipfs';
 import Logger from '../../lib/common/Logger';
 import MockConfirmationStore from '../mocks/MockConfirmationStore';
 // import MockBlockchain from '../mocks/MockBlockchain';
+import MockDidTypeStore from '../mocks/MockDidTypeStore';
 import MockOperationStore from '../mocks/MockOperationStore';
 import MockTransactionStore from '../mocks/MockTransactionStore';
 import MockVersionManager from '../mocks/MockVersionManager';
@@ -34,6 +36,7 @@ describe('Observer', async () => {
   let casClient;
   let downloadManager: DownloadManager;
   let operationStore: IOperationStore;
+  let didTypeStore: IDidTypeStore;
   let transactionStore: MockTransactionStore;
   // let blockchain: MockBlockchain;
   let versionManager: IVersionManager;
@@ -59,6 +62,7 @@ describe('Observer', async () => {
 
     blockchainClient = new Blockchain(config.blockchainServiceUri);
     operationStore = new MockOperationStore();
+    didTypeStore = new MockDidTypeStore();
     transactionStore = new MockTransactionStore();
     downloadManager = new DownloadManager(config.maxConcurrentDownloads, casClient);
     downloadManager.start();
@@ -67,7 +71,7 @@ describe('Observer', async () => {
     // Mock the blockchain to return an empty lock
     spyOn(blockchainClient, 'getValueTimeLock').and.returnValue(Promise.resolve(undefined));
 
-    transactionProcessor = new TransactionProcessor(downloadManager, operationStore, blockchainClient, versionMetadataFetcher);
+    transactionProcessor = new TransactionProcessor(downloadManager, operationStore, didTypeStore, blockchainClient, versionMetadataFetcher);
     const transactionSelector = new TransactionSelector(transactionStore);
     versionManager = new MockVersionManager();
 

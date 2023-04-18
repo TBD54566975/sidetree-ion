@@ -1,0 +1,21 @@
+dist/
+node_modules/
+www/api/index.html
+www/spec/index.html
+www/spec-up/
+nunitresults.xml
+
+# Istanbul code coverage folders
+.nyc_output/
+coverage/
+
+# VS Code
+.vscode
+
+# Intellij
+.idea/
+
+style-conversion
+
+# Mac
+.DS_Store

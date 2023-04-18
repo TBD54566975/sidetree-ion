@@ -41,6 +41,7 @@ describe('Core', async () => {
       const transactionStoreInitSpy = spyOn(core['transactionStore'], 'initialize');
       const unresolvableTransactionStoreInitSpy = spyOn(core['unresolvableTransactionStore'], 'initialize');
       const operationStoreInitSpy = spyOn(core['operationStore'], 'initialize');
+      const didTypeStoreInitSpy = spyOn(core['didTypeStore'], 'initialize');
       const confirmationStoreInitSpy = spyOn(core['confirmationStore'], 'initialize');
       const upgradeDatabaseIfNeededSpy = spyOn(core as any, 'upgradeDatabaseIfNeeded');
       const versionManagerInitSpy = spyOn(core['versionManager'], 'initialize');
@@ -55,6 +56,7 @@ describe('Core', async () => {
       expect(transactionStoreInitSpy).toHaveBeenCalled();
       expect(unresolvableTransactionStoreInitSpy).toHaveBeenCalled();
       expect(operationStoreInitSpy).toHaveBeenCalled();
+      expect(didTypeStoreInitSpy).toHaveBeenCalled();
       expect(confirmationStoreInitSpy).toHaveBeenCalled();
       expect(upgradeDatabaseIfNeededSpy).toHaveBeenCalled();
       expect(versionManagerInitSpy).toHaveBeenCalled();
@@ -247,7 +249,9 @@ describe('Core', async () => {
       const core = new Core(testConfig, testVersionConfig, mockCas);
 
       const operationStoreDeleteSpy = spyOn(core['operationStore'], 'delete');
+      const didTypeStoreDeleteSpy = spyOn(core['didTypeStore'], 'delete');
       const operationStoreCreateIndexSpy = spyOn(core['operationStore'], 'createIndex');
+      const didTypeStoreCreateIndexSpy = spyOn(core['didTypeStore'], 'createIndex');
       const unresolvableTransactionStoreClearCollectionSpy = spyOn(core['unresolvableTransactionStore'], 'clearCollection');
       const transactionStoreClearCollectionSpy = spyOn(core['transactionStore'], 'clearCollection');
       const serviceStateStorePutSpy = spyOn(core['serviceStateStore'], 'put');
@@ -259,9 +263,11 @@ describe('Core', async () => {
 
       // Verify that that upgrade path was invoked.
       expect(operationStoreDeleteSpy).toHaveBeenCalled();
+      expect(didTypeStoreDeleteSpy).toHaveBeenCalled();
       expect(unresolvableTransactionStoreClearCollectionSpy).toHaveBeenCalled();
       expect(transactionStoreClearCollectionSpy).toHaveBeenCalled();
       expect(operationStoreCreateIndexSpy).toHaveBeenCalled();
+      expect(didTypeStoreCreateIndexSpy).toHaveBeenCalled();
       expect(serviceStateStorePutSpy).toHaveBeenCalledWith({ databaseVersion: '1.1.0' });
     });
 

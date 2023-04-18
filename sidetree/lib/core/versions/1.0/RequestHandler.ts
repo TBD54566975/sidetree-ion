@@ -15,6 +15,8 @@ import Resolver from '../../Resolver';
 import ResponseModel from '../../../common/models/ResponseModel';
 import ResponseStatus from '../../../common/enums/ResponseStatus';
 import SidetreeError from '../../../common/SidetreeError';
+import IDidTypeStore from '../../interfaces/IDidTypeStore';
+// import MongoDbDidTypeStore from '../../MongoDbDidTypeStore';
 
 /**
  * Sidetree operation request handler.
@@ -26,6 +28,7 @@ export default class RequestHandler implements IRequestHandler {
   public constructor (
     private resolver: Resolver,
     private operationQueue: IOperationQueue,
+    private didtypeStore: IDidTypeStore,
     private didMethodName: string) {
     this.operationProcessor = new OperationProcessor();
   }
@@ -119,6 +122,17 @@ export default class RequestHandler implements IRequestHandler {
         status: ResponseStatus.ServerError
       };
     }
+  }
+
+  public async handleDidTypeRequest (didType: string): Promise<ResponseModel> {
+    Logger.info(`Handling did type request: ${didType}`);
+
+    const didTypes = await this.didtypeStore.get(didType);
+
+    return {
+      status: ResponseStatus.Succeeded,
+      body: didTypes
+    };
   }
 
   private async handleCreateRequest (operationModel: OperationModel): Promise<ResponseModel> {
