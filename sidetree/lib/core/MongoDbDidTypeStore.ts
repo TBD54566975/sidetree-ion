@@ -1,5 +1,6 @@
 import DidTypeModel from './models/DidTypeModel';
 import IDidTypeStore from './interfaces/IDidTypeStore';
+import { Long } from 'mongodb';
 import MongoDbStore from '../common/MongoDbStore';
 
 /**
@@ -29,7 +30,11 @@ export default class MongoDbDidTypeStore extends MongoDbStore implements IDidTyp
     return didUniqueSuffixes;
   }
 
-  public async delete (): Promise<void> {
-    await this.collection!.deleteMany({});
+  public async delete (txnNumber?: number): Promise<void> {
+    if (txnNumber) {
+      await this.collection!.deleteMany({ transactionNumber: { $gt: Long.fromNumber(txnNumber) } });
+    } else {
+      await this.collection!.deleteMany({});
+    }
   }
 }

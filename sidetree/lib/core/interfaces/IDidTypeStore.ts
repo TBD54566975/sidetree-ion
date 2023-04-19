@@ -17,7 +17,7 @@ export default interface IDidTypeStore {
   get (didType: string): Promise<string[]>;
 
   /**
-   * Deletes all did types in the datastore
+   * Deletes all operations with transaction number greater than the provided parameter.
    */
-  delete (): Promise<void>;
+  delete (transactionNumber?: number): Promise<void>;
 }

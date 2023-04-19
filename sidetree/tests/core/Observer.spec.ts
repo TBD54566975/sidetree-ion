@@ -84,6 +84,7 @@ describe('Observer', async () => {
       blockchainClient,
       config.maxConcurrentDownloads,
       operationStore,
+      didTypeStore,
       transactionStore,
       transactionStore,
       new MockConfirmationStore(),

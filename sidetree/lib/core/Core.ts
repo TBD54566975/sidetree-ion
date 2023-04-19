@@ -80,6 +80,7 @@ export default class Core {
       this.blockchain,
       config.maxConcurrentDownloads,
       this.operationStore,
+      this.didTypeStore,
       this.transactionStore,
       this.unresolvableTransactionStore,
       this.confirmationStore,

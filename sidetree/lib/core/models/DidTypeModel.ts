@@ -7,4 +7,6 @@ export default interface DidTypeModel {
     didUniqueSuffix: string;
     /** The DID type. */
     didType: string;
+    /** The transaction number of the transaction this operation was batched within. */
+    transactionNumber: number;
   }
