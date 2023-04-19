@@ -40,7 +40,6 @@ export default class TransactionProcessor implements ITransactionProcessor {
 
   public async processTransaction (transaction: TransactionModel): Promise<boolean> {
 
-    console.log('1.1');
     // Download the core (index and proof) files.
     let anchoredData: AnchoredData;
     let coreIndexFile: CoreIndexFile;
@@ -77,8 +76,6 @@ export default class TransactionProcessor implements ITransactionProcessor {
       const transactionProcessedCompletely = !retryNeeded;
       return transactionProcessedCompletely;
     }
-
-    console.log('1.2');
 
     // Once code reaches here, it means core files are valid. In order to be compatible with the future data-pruning feature,
     // the operations referenced in core index file must be retained regardless of the validity of provisional and chunk files.
@@ -129,18 +126,12 @@ export default class TransactionProcessor implements ITransactionProcessor {
     // there is no need to perform any more validations at this point, we just need to compose the anchored operations and store them.
 
     try {
-    console.log('1.3');
-    console.log(JSON.stringify(coreIndexFile));
-    console.log('~~~~~~~ PRINT OUT CREATE DID SUFFIXES ~~~~~~~');
-    const didTypeModels = this.composeDidType(coreIndexFile);
-    if (didTypeModels.length > 0) {
-      await this.didTypeStore.insert(didTypeModels);
-    }
-
-    console.log('~~~~~~~ AFTER PRINT OUT CREATE DID SUFFIXES ~~~~~~~');
-
+      const didTypeModels = this.composeDidType(coreIndexFile);
+      if (didTypeModels.length > 0) {
+        await this.didTypeStore.insert(didTypeModels);
+      }
     } catch (error) {
-      Logger.error(LogColor.red(`Unexpected error while adding did type`));
+      Logger.error(LogColor.red(`Unexpected error while adding did type ${error.message}`));
     }
 
     // Compose using files downloaded into anchored operations.
@@ -309,6 +300,10 @@ export default class TransactionProcessor implements ITransactionProcessor {
     return chunkFileModel;
   }
 
+  /**
+   * Retrieves the corresponding suffixData from the `operations.create` in the core index file. If the suffixData has a `type` property,
+   * a new DidTypeModel object is created with the DID unique suffix and the DID type, and the object is added to the resulting `didTypes` array.
+   */
   private composeDidType (coreIndexFile: CoreIndexFile): DidTypeModel[] {
     const didTypes: DidTypeModel[] = [];
 

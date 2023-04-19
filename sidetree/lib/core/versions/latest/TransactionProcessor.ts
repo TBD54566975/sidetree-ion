@@ -300,6 +300,10 @@ export default class TransactionProcessor implements ITransactionProcessor {
     return chunkFileModel;
   }
 
+  /**
+   * Retrieves the corresponding suffixData from the `operations.create` in the core index file. If the suffixData has a `type` property,
+   * a new DidTypeModel object is created with the DID unique suffix and the DID type, and the object is added to the resulting `didTypes` array.
+   */
   private composeDidType (coreIndexFile: CoreIndexFile): DidTypeModel[] {
     const didTypes: DidTypeModel[] = [];
 

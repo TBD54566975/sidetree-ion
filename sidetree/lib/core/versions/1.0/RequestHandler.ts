@@ -3,6 +3,7 @@ import Did from './Did';
 import DidState from '../../models/DidState';
 import DocumentComposer from './DocumentComposer';
 import ErrorCode from './ErrorCode';
+import IDidTypeStore from '../../interfaces/IDidTypeStore';
 import IOperationQueue from './interfaces/IOperationQueue';
 import IRequestHandler from '../../interfaces/IRequestHandler';
 import JsonAsync from './util/JsonAsync';
@@ -15,8 +16,6 @@ import Resolver from '../../Resolver';
 import ResponseModel from '../../../common/models/ResponseModel';
 import ResponseStatus from '../../../common/enums/ResponseStatus';
 import SidetreeError from '../../../common/SidetreeError';
-import IDidTypeStore from '../../interfaces/IDidTypeStore';
-// import MongoDbDidTypeStore from '../../MongoDbDidTypeStore';
 
 /**
  * Sidetree operation request handler.
