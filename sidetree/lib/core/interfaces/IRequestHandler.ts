@@ -12,7 +12,7 @@ export default interface IRequestHandler {
   /**
    * Handles a did type request.
    */
-  handleDidTypeRequest (request: string): Promise<ResponseModel>;
+  handleDidTypeRequest (didType: string): Promise<ResponseModel>;
 
   /**
    * Handles resolve operation.

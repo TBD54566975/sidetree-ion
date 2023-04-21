@@ -29,7 +29,7 @@ import ValueTimeLockVerifier from '../../lib/core/versions/latest/ValueTimeLockV
 describe('TransactionProcessor', () => {
   let casClient: Ipfs;
   let operationStore: MockOperationStore;
-  let didTypeStore : MockDidTypeStore;
+  let didTypeStore: MockDidTypeStore;
   let downloadManager: DownloadManager;
   let blockchain: IBlockchain;
   let transactionProcessor: TransactionProcessor;
@@ -52,6 +52,7 @@ describe('TransactionProcessor', () => {
     downloadManager.start();
 
     operationStore = new MockOperationStore();
+    didTypeStore = new MockDidTypeStore();
     blockchain = new MockBlockchain();
     transactionProcessor = new TransactionProcessor(downloadManager, operationStore, didTypeStore, blockchain, versionMetadataFetcher);
   });
@@ -380,7 +381,6 @@ describe('TransactionProcessor', () => {
       done();
     });
   });
-
   describe('downloadAndVerifyProvisionalIndexFile', () => {
     it('should validate a valid provisional index file for the case that it does not have the `operations` property.', async (done) => {
       const createOperationData = await OperationGenerator.generateCreateOperation();

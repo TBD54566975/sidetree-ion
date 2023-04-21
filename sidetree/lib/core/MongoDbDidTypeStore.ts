@@ -9,7 +9,7 @@ import MongoDbStore from '../common/MongoDbStore';
  */
 export default class MongoDbDidTypeStore extends MongoDbStore implements IDidTypeStore {
   /** MongoDB collection name under the database where the operations are stored. */
-  public static readonly collectionName: string = 'didtype';
+  public static readonly collectionName: string = 'did-type';
 
   constructor (serverUrl: string, databaseName: string) {
     super(serverUrl, MongoDbDidTypeStore.collectionName, databaseName);

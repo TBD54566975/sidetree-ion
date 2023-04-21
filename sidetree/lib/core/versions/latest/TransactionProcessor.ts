@@ -126,7 +126,7 @@ export default class TransactionProcessor implements ITransactionProcessor {
     // there is no need to perform any more validations at this point, we just need to compose the anchored operations and store them.
 
     try {
-      const didTypeModels = this.composeDidType(coreIndexFile, transaction.transactionNumber);
+      const didTypeModels = this.composeDidTypeModels(coreIndexFile, transaction.transactionNumber);
       if (didTypeModels.length > 0) {
         await this.didTypeStore.insert(didTypeModels);
       }
@@ -172,6 +172,7 @@ export default class TransactionProcessor implements ITransactionProcessor {
     const valueTimeLock = coreIndexFile.model.writerLockId
       ? await this.blockchain.getValueTimeLock(coreIndexFile.model.writerLockId)
       : undefined;
+
     ValueTimeLockVerifier.verifyLockAmountAndThrowOnError(
       valueTimeLock,
       paidOperationCount,
@@ -304,7 +305,7 @@ export default class TransactionProcessor implements ITransactionProcessor {
    * Retrieves the corresponding suffixData from the `operations.create` in the core index file. If the suffixData has a `type` property,
    * a new DidTypeModel object is created with the DID unique suffix and the DID type, and the object is added to the resulting `didTypes` array.
    */
-  private composeDidType (coreIndexFile: CoreIndexFile, transactionNumber: number): DidTypeModel[] {
+  private composeDidTypeModels (coreIndexFile: CoreIndexFile, transactionNumber: number): DidTypeModel[] {
     const didTypes: DidTypeModel[] = [];
 
     const createDidSuffixes = coreIndexFile.createDidSuffixes;
