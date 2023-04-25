@@ -229,12 +229,14 @@ export default class OperationGenerator {
     const [updatePublicKey, updatePrivateKey] = await Jwk.generateEs256kKeyPair();
     const [signingPublicKey, signingPrivateKey] = await OperationGenerator.generateKeyPair(signingKeyId);
     const services = OperationGenerator.generateServices(['serviceId123']);
+    const didType = '0005';
 
     const operationRequest = await OperationGenerator.createCreateOperationRequest(
       recoveryPublicKey,
       updatePublicKey,
       [signingPublicKey],
-      services
+      services,
+      didType
     );
 
     const operationBuffer = Buffer.from(JSON.stringify(operationRequest));
@@ -380,7 +382,8 @@ export default class OperationGenerator {
     recoveryPublicKey: JwkEs256k,
     updatePublicKey: JwkEs256k,
     otherPublicKeys: PublicKeyModel[],
-    services?: ServiceModel[]) {
+    services?: ServiceModel[],
+    didType?: string) {
     const document: DocumentModel = {
       publicKeys: otherPublicKeys,
       services
@@ -400,6 +403,7 @@ export default class OperationGenerator {
 
     const suffixData = {
       deltaHash,
+      type: didType,
       recoveryCommitment: Multihash.canonicalizeThenDoubleHashThenEncode(recoveryPublicKey)
     };
 

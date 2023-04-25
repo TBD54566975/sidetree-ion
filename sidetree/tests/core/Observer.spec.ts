@@ -294,6 +294,83 @@ describe('Observer', async () => {
     }
   });
 
+  it('should process a valid operation batch successfully with did types.', async () => {
+    const operation1Data = await OperationGenerator.generateAnchoredCreateOperation({ transactionTime: 1, transactionNumber: 1, operationIndex: 1 });
+    const operation2Data = await OperationGenerator.generateAnchoredCreateOperation({ transactionTime: 1, transactionNumber: 1, operationIndex: 2 });
+    const createOperations = [operation1Data.createOperation, operation2Data.createOperation];
+
+    const coreProofFileUri = undefined;
+
+    // Generating chunk file data.
+    const mockChunkFileBuffer = await ChunkFile.createBuffer(createOperations, [], []);
+    const mockChunkFileFetchResult: FetchResult = {
+      code: FetchResultCode.Success,
+      content: mockChunkFileBuffer
+    };
+    const mockChunkFileUri = 'MockChunkFileUri';
+
+    // Generating provisional index file data.
+    const mockProvisionalProofFileUri = undefined;
+    const mockProvisionalIndexFileBuffer = await ProvisionalIndexFile.createBuffer(mockChunkFileUri, mockProvisionalProofFileUri, []);
+    const mockProvisionalIndexFileUri = 'MockProvisionalIndexFileUri';
+    const mockProvisionalIndexFileFetchResult: FetchResult = {
+      code: FetchResultCode.Success,
+      content: mockProvisionalIndexFileBuffer
+    };
+
+    // Generating core index file data.
+    const mockCoreIndexFileBuffer =
+      await CoreIndexFile.createBuffer('writerLock', mockProvisionalIndexFileUri, coreProofFileUri, createOperations, [], []);
+    const mockAnchoredFileFetchResult: FetchResult = {
+      code: FetchResultCode.Success,
+      content: mockCoreIndexFileBuffer
+    };
+    const mockCoreIndexFileUri = 'MockCoreIndexFileUri';
+
+    // Prepare the mock fetch results from the `DownloadManager.download()`.
+    const mockDownloadFunction = async (hash: string) => {
+      if (hash === mockCoreIndexFileUri) {
+        return mockAnchoredFileFetchResult;
+      } else if (hash === mockProvisionalIndexFileUri) {
+        return mockProvisionalIndexFileFetchResult;
+      } else if (hash === mockChunkFileUri) {
+        return mockChunkFileFetchResult;
+      } else {
+        throw new Error('Test failed, unexpected hash given');
+      }
+    };
+    spyOn(downloadManager, 'download').and.callFake(mockDownloadFunction);
+
+    const anchoredData = AnchoredDataSerializer.serialize({ coreIndexFileUri: mockCoreIndexFileUri, numberOfOperations: createOperations.length });
+
+    const mockTransaction: TransactionModel = {
+      transactionNumber: 1,
+      transactionTime: 1000000,
+      transactionTimeHash: '1000',
+      anchorString: anchoredData,
+      transactionFeePaid: 1,
+      normalizedTransactionFee: 1,
+      writer: 'writer'
+    };
+    const transactionUnderProcessing = {
+      transaction: mockTransaction,
+      processingStatus: 'pending'
+    };
+    await (observer as any).processTransaction(mockTransaction, transactionUnderProcessing);
+
+    const didUniqueSuffixes = createOperations.map(operation => operation.didUniqueSuffix);
+    for (const didUniqueSuffix of didUniqueSuffixes) {
+      const operationArray = await operationStore.get(didUniqueSuffix);
+      expect(operationArray.length).toEqual(1);
+    }
+
+    const didTypeStoreResults = await didTypeStore.get('0005');
+
+    expect(didTypeStoreResults.length).toEqual(2);
+    expect(didTypeStoreResults[0]).toEqual(createOperations[0].didUniqueSuffix);
+    expect(didTypeStoreResults[1]).toEqual(createOperations[1].didUniqueSuffix);
+  });
+
   // Testing invalid core index file scenarios:
   const invalidCoreIndexFileTestsInput = [
     [FetchResultCode.MaxSizeExceeded, 'exceeded max size limit'],
