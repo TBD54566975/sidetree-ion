@@ -295,8 +295,8 @@ describe('Observer', async () => {
   });
 
   it('should process a valid operation batch successfully with did types.', async () => {
-    const operation1Data = await OperationGenerator.generateAnchoredCreateOperation({ transactionTime: 1, transactionNumber: 1, operationIndex: 1 });
-    const operation2Data = await OperationGenerator.generateAnchoredCreateOperation({ transactionTime: 1, transactionNumber: 1, operationIndex: 2 });
+    const operation1Data = await OperationGenerator.generateAnchoredCreateOperation({ transactionTime: 1, transactionNumber: 1, operationIndex: 1 }, '0005');
+    const operation2Data = await OperationGenerator.generateAnchoredCreateOperation({ transactionTime: 1, transactionNumber: 1, operationIndex: 2 }, '0005');
     const createOperations = [operation1Data.createOperation, operation2Data.createOperation];
 
     const coreProofFileUri = undefined;

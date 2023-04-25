@@ -216,6 +216,18 @@ describe('Core', async () => {
     });
   });
 
+  describe('handleDidTypeRequest', () => {
+    it('should call the needed functions and return a response', async () => {
+      const core = new Core(testConfig, testVersionConfig, mockCas);
+      const mockRequestHandler = jasmine.createSpyObj<IRequestHandler>('versionManagerSpy', ['handleDidTypeRequest']);
+      mockRequestHandler.handleDidTypeRequest.and.callFake(() => { return resolvedRequest; });
+      core['versionManager']['getRequestHandler'] = () => { return mockRequestHandler; };
+      const response = await core.handleDidTypeRequest('some string');
+      expect(mockRequestHandler.handleDidTypeRequest).toHaveBeenCalled();
+      expect(response).toEqual({ status: ResponseStatus.Succeeded, body: null });
+    });
+  });
+
   describe('upgradeDatabaseIfNeeded', () => {
     beforeEach(() => {
     });

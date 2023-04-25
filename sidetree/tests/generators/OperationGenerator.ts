@@ -98,8 +98,8 @@ export default class OperationGenerator {
   /**
    * Generates an anchored create operation.
    */
-  public static async generateAnchoredCreateOperation (input: AnchoredCreateOperationGenerationInput) {
-    const createOperationData = await OperationGenerator.generateCreateOperation();
+  public static async generateAnchoredCreateOperation (input: AnchoredCreateOperationGenerationInput, didType?:string) {
+    const createOperationData = await OperationGenerator.generateCreateOperation(didType);
 
     const anchoredOperationModel = {
       type: OperationType.Create,
@@ -223,13 +223,12 @@ export default class OperationGenerator {
   /**
    * Generates a create operation.
    */
-  public static async generateCreateOperation () {
+  public static async generateCreateOperation (didType?: string) {
     const signingKeyId = 'signingKey';
     const [recoveryPublicKey, recoveryPrivateKey] = await Jwk.generateEs256kKeyPair();
     const [updatePublicKey, updatePrivateKey] = await Jwk.generateEs256kKeyPair();
     const [signingPublicKey, signingPrivateKey] = await OperationGenerator.generateKeyPair(signingKeyId);
     const services = OperationGenerator.generateServices(['serviceId123']);
-    const didType = '0005';
 
     const operationRequest = await OperationGenerator.createCreateOperationRequest(
       recoveryPublicKey,
