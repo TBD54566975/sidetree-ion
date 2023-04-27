@@ -172,6 +172,7 @@ export default class TransactionProcessor implements ITransactionProcessor {
     const valueTimeLock = coreIndexFile.model.writerLockId
       ? await this.blockchain.getValueTimeLock(coreIndexFile.model.writerLockId)
       : undefined;
+
     ValueTimeLockVerifier.verifyLockAmountAndThrowOnError(
       valueTimeLock,
       paidOperationCount,
