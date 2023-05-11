@@ -38,10 +38,10 @@ services:
 
     # Choose one of the following options to run ion-bitcoin
     # Remote Image
-    image: nitroneal/ion:1.0.6
+    image: ghcr.io/tbd54566975/sidetree-ion:main
 
     # Local Image
-    # image: ion:1.0.6
+    # image: <local-image-name>
 
     # Local Build
     # build: ../
@@ -59,14 +59,13 @@ services:
 
   ion-core:
     container_name: mainnet-ion-core
-    # image: nitroneal/ion:1.0.6
-
+    
     # Choose one of the following options to run ion-core
     # Remote Image
-    image: nitroneal/ion:1.0.6
+    image: ghcr.io/tbd54566975/sidetree-ion:main
 
     # Local Image
-    # image: ion:1.0.6
+    # image: <local-image-name>
 
     # Local Build
     # build: ../
