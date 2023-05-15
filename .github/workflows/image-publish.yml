@@ -19,7 +19,7 @@ env:
 
 jobs:
 
-  build-and-push-ssi:
+  build-and-push-sidetree-ion:
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -21,7 +21,7 @@ The Dockerfile does the following:
 
 ## Building the Docker Image
 ```
-docker buildx build --platform linux/amd64 -f ./Dockerfile -t ion:1.0.6 . --load
+docker buildx build --platform linux/amd64 -f ./Dockerfile -t ion:1.0.x . --load
 ```
 
 After building the image, you can run a container from it and test the application as needed.
@@ -37,5 +37,34 @@ To start ion with your local image running on the testnet run:
 docker-compose -f docker-compose.yml -f docker-compose.testnet-override.yml up --build
 ```
 
+---
 
 
+To start ion with your local image running on the mainnet run:
+```
+docker-compose up --build
+```
+
+---
+
+To have the local image running on the testnet run in read only mode:
+change the config value in 
+
+```
+  # ion/docker/docker-compose.testnet-override.yml/
+    - ION_CORE_CONFIG_FILE_PATH=/config/docker-testnet-core-readonly-config.json
+```
+then start as normally
+
+
+---
+
+To start ion with your local image running on the mainnet run in read only mode:
+change the config value in 
+
+
+```
+# ion/docker/docker-compose.yml/
+    - ION_CORE_CONFIG_FILE_PATH=/config/docker-mainnet-core-readonly-config.json
+```
+then start as normally
