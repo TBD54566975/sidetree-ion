@@ -1,6 +1,6 @@
 {
   "bitcoinDataDirectory": "/bitcoindata",
-  "bitcoinFeeSpendingCutoffPeriodInBlocks": 1,
+  "bitcoinFeeSpendingCutoffPeriodInBlocks": 144,
   "bitcoinFeeSpendingCutoff": 0.001,
   "bitcoinPeerUri": "http://bitcoin-core-mainnet:8332",
   "bitcoinRpcUsername": "admin",

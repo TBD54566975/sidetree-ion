@@ -1,5 +1,5 @@
 {
-  "batchingIntervalInSeconds": 600,
+  "batchingIntervalInSeconds": 3600,
   "blockchainServiceUri": "http://ion-bitcoin:3002",
   "databaseName": "ion-mainnet-core",
   "didMethodName": "ion",
