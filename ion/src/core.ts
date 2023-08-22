@@ -65,6 +65,10 @@ const sidetreeCore = new SidetreeCore(config, coreVersions, cas);
 
 const app = new Koa();
 
+// Add open CORS policy.
+const cors = require('@koa/cors');
+app.use(cors());
+
 // Raw body parser.
 app.use(async (ctx, next) => {
   ctx.body = await getRawBody(ctx.req);
