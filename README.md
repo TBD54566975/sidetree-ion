@@ -19,7 +19,7 @@ The Dockerfile does the following:
 
 
 
-## Building the Docker Image
+## Building the Docker Image 
 ```
 docker buildx build --platform linux/amd64 -f ./Dockerfile -t ion:1.0.x . --load
 ```
